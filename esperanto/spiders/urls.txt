@@ -1,8 +1,8 @@
 https://bahaaeligo.bahai.de/U-tekstoj/home-U.html
-https://bulteno.esperanto-usa.org
-https://edukado.net
-https://eo.wikinews.org/wiki/%C4%88efpa%C4%9Do
-https://eo.wikipedia.org/wiki/Vikipedio:%C4%88efpa%C4%9Do
+https://bulteno.esperanto-usa.org/
+https://edukado.net/
+#https://eo.wikinews.org/wiki/%C4%88efpa%C4%9Do
+#https://eo.wikipedia.org/wiki/Vikipedio:%C4%88efpa%C4%9Do
 https://esperanto.be/index_eo.php
 http://esperanto.china.org.cn/esperantujo/2007-06/15/content_8392604.htm
 https://www.esperanto.de/eo
@@ -59,7 +59,7 @@ https://www.vastalto.com/librejo/
 https://www.esperanto.mv.ru/ESP/literaturo.html
 https://www.libraro.net/read
 http://verkoj.com/
-https://eo.wikibooks.org/wiki/Kategorio:Unuopaj_libroj
+#https://eo.wikibooks.org/wiki/Kategorio:Unuopaj_libroj
 http://bretaro.ikso.net/novajhoj
 #https://egalecen.org/
 https://esperantokajbookcrossing.wordpress.com
