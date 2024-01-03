@@ -48,7 +48,7 @@ class GSpider(scrapy.Spider):
 		body = response.text
 
 		good = False
-		if re.search(r' lang=["\']?eo', body) or re.search(r'[ĈĉĜĝĴĵŜŝŬŭ]', body) or re.search(r'&#(264|265|284|285|308|309|348|349|364|365);', body) or re.search(r'&#[xX](108|109|11C|11D|134|135|15C|15D|16C|16D);', body):
+		if re.search(r'<(html|body)\b[^>]*\blang=["\']?eo', body, re.IGNORECASE) or re.search(r'[ĈĉĜĝĴĵŜŝŬŭ]', body) or re.search(r'&#(264|265|284|285|308|309|348|349|364|365);', body) or re.search(r'&#[xX](108|109|11C|11D|134|135|15C|15D|16C|16D);', body):
 			good = True
 
 		if not good:
