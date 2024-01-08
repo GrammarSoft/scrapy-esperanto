@@ -14,7 +14,7 @@ NEWSPIDER_MODULE = "esperanto.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "esperanto (+http://www.yourdomain.com)"
+USER_AGENT = "Esperanto Crawler (+https://grammarsoft.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -28,7 +28,7 @@ CONCURRENT_REQUESTS = 64
 #DOWNLOAD_DELAY = 3
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
-CONCURRENT_REQUESTS_PER_IP = 1
+CONCURRENT_REQUESTS_PER_IP = 2
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False
@@ -75,7 +75,7 @@ AUTOTHROTTLE_START_DELAY = 1
 #AUTOTHROTTLE_MAX_DELAY = 60
 # The average number of requests Scrapy should be sending in parallel to
 # each remote server
-#AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
 # Enable showing throttling stats for every response received:
 #AUTOTHROTTLE_DEBUG = False
 

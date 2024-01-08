@@ -20,7 +20,7 @@ class GSpider(scrapy.Spider):
 		dir = os.path.dirname(__file__)
 		os.chdir(dir)
 
-		self.link_extractor = LinkExtractor(deny=[r'\.wiki(news|pedia|books)\.org'], deny_domains=['wikitrans.net', 'epo.wikitrans.net', 'dan.wikitrans.net', 'eo.wikinews.org', 'eo.wikipedia.org', 'eo.wikibooks.org'], unique=True)
+		self.link_extractor = LinkExtractor(deny=[r'\.wiki(news|pedia|books|media|travel|voyage|source|data)\.org/', r'\.rulit\.me/', r'\.ipernity\.com/', r'\.wiktionary\.org/', r'\bgroups\.io/'], deny_domains=['wikitrans.net', 'epo.wikitrans.net', 'dan.wikitrans.net', 'eo.wikinews.org', 'eo.wikipedia.org', 'eo.wikibooks.org', 'www.rulit.me', 'www.ipernity.com', 'commons.wikimedia.org', 'eo.wiktionary.org', 'groups.io'], unique=True)
 
 		subprocess.run(['sqlite3', 'esperanto.sqlite', '-init', 'schema.sql'], input='')
 		self.con = sqlite3.connect('esperanto.sqlite')
@@ -35,7 +35,7 @@ class GSpider(scrapy.Spider):
 			urls = re.sub(r'#[^\n]+\n', r'', urls)
 			urls = urls.strip().split('\n')
 			for url in urls:
-				self.db.execute("INSERT INTO sc_queue (q_url) VALUES (?)", [url])
+				self.db.execute("INSERT OR IGNORE INTO sc_queue (q_url) VALUES (?)", [url])
 			self.con.commit()
 			self.db.execute("SELECT q_url FROM sc_queue ORDER BY q_stamp ASC, q_url ASC")
 			urls = self.db.fetchall()
@@ -53,7 +53,7 @@ class GSpider(scrapy.Spider):
 
 		if not good:
 			self.log(f'Not Esperanto {response.url}')
-			self.db.execute("INSERT INTO sc_queue_not (q_url) VALUES (?)", [response.url])
+			self.db.execute("INSERT OR IGNORE INTO sc_queue_not (q_url) VALUES (?)", [response.url])
 			self.con.commit()
 			return None
 
@@ -77,6 +77,7 @@ class GSpider(scrapy.Spider):
 				self.log(f'Nofollow {response.url} => {link.url}')
 				continue
 			link.url = re.sub(r'#.*$', r'', link.url)
+			link.url = re.sub(r'///+', r'//', link.url)
 
 			self.db.execute("SELECT r_url FROM sc_results WHERE r_url = ?", [link.url])
 			if self.db.fetchall():
