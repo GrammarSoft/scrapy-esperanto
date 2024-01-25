@@ -1,6 +1,6 @@
 PRAGMA case_sensitive_like = ON;
 PRAGMA foreign_keys = OFF;
-PRAGMA journal_mode = MEMORY;
+PRAGMA journal_mode = WAL;
 PRAGMA locking_mode = EXCLUSIVE;
 PRAGMA synchronous = OFF;
 PRAGMA threads = 4;
@@ -35,3 +35,4 @@ CREATE TABLE IF NOT EXISTS sc_results (
 
 	PRIMARY KEY (r_hash)
 );
+CREATE INDEX IF NOT EXISTS sc_results_r_url ON sc_results (r_url);

@@ -20,7 +20,7 @@ class GSpider(scrapy.Spider):
 		dir = os.path.dirname(__file__)
 		os.chdir(dir)
 
-		self.link_extractor = LinkExtractor(deny=[r'\.wiki(news|pedia|books|media|travel|voyage|source|data)\.org/', r'\.rulit\.me/', r'\.ipernity\.com/', r'\.wiktionary\.org/', r'\bgroups\.io/'], deny_domains=['wikitrans.net', 'epo.wikitrans.net', 'dan.wikitrans.net', 'eo.wikinews.org', 'eo.wikipedia.org', 'eo.wikibooks.org', 'www.rulit.me', 'www.ipernity.com', 'commons.wikimedia.org', 'eo.wiktionary.org', 'groups.io'], unique=True)
+		self.link_extractor = LinkExtractor(deny=[r'\.wiki(news|pedia|books|media|travel|voyage|source|data)\.org/', r'\.rulit\.me/', r'\.ipernity\.com/', r'\.wiktionary\.org/', r'\bgroups\.io/', r'\.archive\.org/', r'\.ushmm\.org/', r'\.steampowered\.com/'], deny_domains=['wikitrans.net', 'epo.wikitrans.net', 'dan.wikitrans.net', 'eo.wikinews.org', 'eo.wikipedia.org', 'eo.wikibooks.org', 'www.rulit.me', 'www.ipernity.com', 'commons.wikimedia.org', 'eo.wiktionary.org', 'groups.io', 'web.archive.org', 'collections.ushmm.org', 'store.steampowered.com'], unique=True)
 
 		subprocess.run(['sqlite3', 'esperanto.sqlite', '-init', 'schema.sql'], input='')
 		self.con = sqlite3.connect('esperanto.sqlite')
@@ -48,7 +48,22 @@ class GSpider(scrapy.Spider):
 		body = response.text
 
 		good = False
-		if re.search(r'<(html|body)\b[^>]*\blang=["\']?eo', body, re.IGNORECASE) or re.search(r'[ĈĉĜĝĴĵŜŝŬŭ]', body) or re.search(r'&#(264|265|284|285|308|309|348|349|364|365);', body) or re.search(r'&#[xX](108|109|11C|11D|134|135|15C|15D|16C|16D);', body):
+		if re.search(r'<(?:html|body)\b[^>]*\blang=["\']?eo', body, re.IGNORECASE):
+			self.log(f'Esperanto lang=eo {response.url}')
+			good = True
+		if (len(re.findall(r'[ĈĉĜĝĴĵŜŝŬŭ]', body)) >= 4):
+			self.log(f'Esperanto diacritics {response.url}')
+			good = True
+		'''
+		if (len(re.findall(r'[CcGgJjSsUu]x', body)) >= 8):
+			self.log(f'Esperanto X-convention {response.url}')
+			good = True
+		'''
+		if (len(re.findall(r'&#(?:264|265|284|285|308|309|348|349|364|365);', body)) >= 4):
+			self.log(f'Esperanto entitiy {response.url}')
+			good = True
+		if (len(re.findall(r'&#[xX](108|109|11C|11D|134|135|15C|15D|16C|16D);', body)) >= 4):
+			self.log(f'Esperanto hex-entitiy {response.url}')
 			good = True
 
 		if not good:
@@ -79,10 +94,6 @@ class GSpider(scrapy.Spider):
 			link.url = re.sub(r'#.*$', r'', link.url)
 			link.url = re.sub(r'///+', r'//', link.url)
 
-			self.db.execute("SELECT r_url FROM sc_results WHERE r_url = ?", [link.url])
-			if self.db.fetchall():
-				self.log(f'Seen result {response.url} => {link.url}')
-				continue
 			self.db.execute("SELECT q_url FROM sc_queue WHERE q_url = ?", [link.url])
 			if self.db.fetchall():
 				self.log(f'Seen queue {response.url} => {link.url}')
@@ -90,6 +101,10 @@ class GSpider(scrapy.Spider):
 			self.db.execute("SELECT q_url FROM sc_queue_not WHERE q_url = ?", [link.url])
 			if self.db.fetchall():
 				self.log(f'Seen queue_not {response.url} => {link.url}')
+				continue
+			self.db.execute("SELECT r_url FROM sc_results WHERE r_url = ?", [link.url])
+			if self.db.fetchall():
+				self.log(f'Seen result {response.url} => {link.url}')
 				continue
 
 			self.db.execute("INSERT OR IGNORE INTO sc_queue (q_url) VALUES (?)", [link.url])

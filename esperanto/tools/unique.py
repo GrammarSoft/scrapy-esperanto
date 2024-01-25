@@ -10,8 +10,9 @@ import regex as re
 from pathlib import Path
 
 tmpdir = tempfile.gettempdir()
+dir = os.path.dirname(__file__)
 
-subprocess.run(['sqlite3', 'unique.sqlite', '-init', 'unique-schema.sql'], input='')
+subprocess.run(['sqlite3', 'unique.sqlite', '-init', dir + '/unique-schema.sql'], input='')
 d_con = sqlite3.connect('unique.sqlite')
 d_db = d_con.cursor()
 
